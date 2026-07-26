@@ -51,7 +51,7 @@ export const login = async (req, res) => {
 
     try {
         // find the existing user 
-        const user = await User.findOne({ $or: [{ email }, { username }] }).select("+password");
+        const user = await User.findOne({ $and: [{ email }, { username }] }).select("+password");
 
         // if user not exists this will returns the message with register first
         if (!user) {
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
         const accessToken = generateToken(user._id);
 
         // setting the cookies 
-        res.cookie("accessToken", AccessToken, {
+        res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
@@ -95,4 +95,28 @@ export const login = async (req, res) => {
             message: error.message || "Internal Server Error"
         });
     }
+}
+// /me only authenticated can use this
+export const me = (req, res) => {
+    // gives the current logged in user's details
+    return res.status(200).json({
+        success: true,
+        message: "User's details",
+        user: req.user
+    });
+}
+//logout user controller
+export const logout = (req, res) => {
+    // clearing the stored cookie as same as setted
+    res.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: 'strict',
+    });
+
+    // returning the success response
+    return res.status(200).json({
+        success: true,
+        message: "User logged out successfully"
+    });
 }
