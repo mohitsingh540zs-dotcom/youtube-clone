@@ -52,3 +52,38 @@ export const createChannel = async (req, res) => {
         });
     }
 }
+
+// channel getter controller
+export const getChannel = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const channel = await Channel.findById(id).populate("owner", "username avatar");
+
+        if (!channel) {
+            return res.status(404).json({
+                success: false,
+                message: "channel doesn't exists"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Channel fetched successfully",
+            channel
+        });
+
+    } catch (error) {
+
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid channel id"
+            });
+        }
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
