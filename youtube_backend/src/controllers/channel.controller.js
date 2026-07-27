@@ -87,3 +87,88 @@ export const getChannel = async (req, res) => {
         });
     }
 }
+
+// self channel getter controller
+export const getMyChannel = async (req, res) => {
+
+    try {
+        if (!req.user.channel) {
+            return res.status(404).json({
+                success: false,
+                message: "You haven't created a channel yet"
+            });
+        }
+
+        const channel = await Channel.findById(req.user.channel).
+            populate("owner", "username avatar");
+
+        if (!channel) {
+            return res.status(404).json({
+                success: false,
+                message: "Channel not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Channel fetched successfuly",
+            channel
+        });
+
+    } catch (error) {
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid channel Id"
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
+
+// channel updater controller 
+export const updateChannel = async (req, res) => {
+    try {
+        if (!req.user.channel) {
+            return res.status(404).json({
+                success: false,
+                message: "Channel not created yet"
+            });
+        }
+
+        const channel = await Channel.findById(req.user.channel).
+            populate("owner", "username avatar");
+
+        if (!channel) {
+            return res.status(404).json({
+                success: false,
+                message: "Channel not found"
+            });
+        }
+
+        const allowedFields = ["channelName", "description", "banner"];
+
+        Object.keys(req.body).forEach(key => {
+            if (allowedFields.includes(key)) {
+                channel[key] = req.body[key];
+            }
+        });
+
+        await channel.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Updated successfully",
+            channel
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
