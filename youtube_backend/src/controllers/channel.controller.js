@@ -172,3 +172,76 @@ export const updateChannel = async (req, res) => {
         });
     }
 }
+
+// channel deleter controller
+export const deleteChannel = async (req, res) => {
+    try {
+        if (!req.user.channel) {
+            return res.status(404).json({
+                success: false,
+                message: "You don't have a channel"
+            });
+        }
+
+        const channel = await Channel.findByIdAndDelete(req.user.channel);
+        if (!channel) {
+            return res.status(404).json({
+                success: false,
+                message: "Channel not found"
+            });
+        }
+
+        req.user.channel = null;
+        await req.user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Channel deleted successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
+
+// search controller
+export const searchChannel = async (req, res) => {
+    const { name } = req.query;
+
+    try {
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: "Search query required"
+            });
+        }
+
+        const channels = await Channel.find({
+            channelName: {
+                $regex: name,
+                $options: "i"
+            }
+        }).populate("owner", "username avatar").limit(15);
+
+        if (channels.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No channel found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Channels found successfully",
+            channels
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
