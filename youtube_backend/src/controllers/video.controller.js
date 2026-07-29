@@ -268,3 +268,59 @@ export const searchVideo = async (req, res) => {
         });
     }
 }
+
+export const categoryFilter = async (req, res) => {
+    const { category } = req.params;
+
+    try {
+        if (!category) {
+            return res.status(400).json({
+                success: false,
+                message: "Category needed"
+            });
+        }
+
+        const allowedCategories = [
+            "Education",
+            "Gaming",
+            "Music",
+            "Sports",
+            "Technology",
+            "Entertainment",
+            "General"
+        ]
+        const formattedCategory = category.trim();
+        const normalisedCategory = formattedCategory.charAt(0).toUpperCase() + formattedCategory.slice(1).toLowerCase();
+
+        if (!allowedCategories.includes(normalisedCategory)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid category"
+            });
+        }
+
+        const videos = await Video.find({
+            category: normalisedCategory
+        }).populate("channel", "channelName banner").sort({ createdAt: -1 });
+
+        if (videos.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No video found",
+                videos: []
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Videos fetched successfully",
+            videos
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
