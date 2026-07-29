@@ -59,6 +59,12 @@ const videoSchema = new mongoose.Schema({
         default: 0
     },
 
+    dislikes: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

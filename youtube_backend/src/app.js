@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth.routes.js";
 import channelRoute from "./routes/channel.routes.js";
+import videoRoute from "./routes/videos.routes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors({
 
 app.use('/auth', authRoute);
 app.use('/channel', channelRoute);
+app.use('/videos', videoRoute);
 
 
 app.get('/health', (req, res) => {
