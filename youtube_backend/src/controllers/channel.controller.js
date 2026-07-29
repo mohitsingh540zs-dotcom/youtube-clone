@@ -1,5 +1,7 @@
 import User from "../models/User.js"
 import Channel from "../models/Channel.js"
+import mongoose from "mongoose";
+import Video from "../models/Video.js";
 
 // channel creater controller
 export const createChannel = async (req, res) => {
@@ -226,9 +228,10 @@ export const searchChannel = async (req, res) => {
         }).populate("owner", "username avatar").limit(15);
 
         if (channels.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "No channel found"
+            return res.status(200).json({
+                success: true,
+                message: "No channel found",
+                channels: []
             });
         }
 
@@ -236,6 +239,45 @@ export const searchChannel = async (req, res) => {
             success: true,
             message: "Channels found successfully",
             channels
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
+
+// get videos of channel controller 
+export const getVideosByChannel = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid channel id"
+            });
+        }
+
+        const channel = await Channel.findById(id).populate("owner", "username avatar");
+        if (!channel) {
+            return res.status(404).json({
+                success: false,
+                message: "Channel not found"
+            });
+        }
+
+        const videos = await Video.find({
+            channel: id
+        }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            message: "Videos found successfully",
+            channel,
+            videos
         });
 
     } catch (error) {
