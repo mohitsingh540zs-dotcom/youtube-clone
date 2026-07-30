@@ -54,7 +54,7 @@ export const createComment = async (req, res) => {
     }
 }
 
-export const getAllComments = async (req, res) => {
+export const getCommentsByVideo = async (req, res) => {
 
     const { videoId } = req.params;
 
@@ -92,6 +92,102 @@ export const getAllComments = async (req, res) => {
             comments
         });
 
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+}
+
+export const updateComment = async (req, res) => {
+    const { commentId } = req.params;
+    const { text } = req.body;
+
+
+    try {
+
+        if (!mongoose.isValidObjectId(commentId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Comment Id"
+            });
+        }
+        if (!text?.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Comment Text required"
+            });
+        }
+
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: "Comment doesn't exists"
+            });
+        }
+
+        if (comment.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to do this."
+            });
+        }
+
+        comment.text = text.trim();
+        await comment.save();
+
+        await comment.populate("owner", "username avatar");
+
+        return res.status(200).json({
+            success: true,
+            message: "Comment updated Successfully",
+            comment
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+
+}
+
+export const deleteComment = async (req, res) => {
+    const { commentId } = req.params;
+
+    try {
+        if (!mongoose.isValidObjectId(commentId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Comment Id"
+            });
+        }
+
+        const comment = await Comment.findById(commentId);
+
+        if (!comment) {
+            return res.status(404).json({
+                success: false,
+                message: "Comment not found"
+            });
+        }
+
+        if (comment.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to do this."
+            });
+        }
+
+        await comment.deleteOne();
+
+        return res.status(200).json({
+            success: true,
+            message: "Comment deleted successfully"
+        });
     } catch (error) {
         return res.status(500).json({
             success: false,
