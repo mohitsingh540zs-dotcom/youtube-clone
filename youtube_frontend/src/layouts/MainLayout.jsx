@@ -28,7 +28,7 @@ const MainLayout = () => {
                     isOpen={isSidebarOpen}
                 />
 
-                <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
+                <main className="flex-1 p-4 overflow-x-hidden">
                     <Outlet />
                 </main>
 
