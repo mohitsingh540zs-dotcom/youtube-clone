@@ -2,7 +2,7 @@ import { Bell, Menu, Plus, Search, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 
-const Navbar = ({ setIsSidebarOpen }) => {
+const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
     return (
         <header className="sticky top-0 z-50 h-16 bg-white border-b px-4 md:px-6 flex items-center justify-between gap-4">
 
@@ -10,10 +10,16 @@ const Navbar = ({ setIsSidebarOpen }) => {
             <div className="flex items-center gap-4 flex-shrink-0">
 
                 <button
-                    onClick={() => setIsSidebarOpen(prev => !prev)}
-                    className="p-2 rounded-full hover:bg-gray-100 transition"
+                    onClick={() => {
+                        if (window.innerWidth < 768) {
+                            setIsMobileOpen(true);
+                        } else {
+                            setIsSidebarOpen(prev => !prev);
+                        }
+                    }}
+                    className="p-2 rounded-full hover:bg-gray-100"
                 >
-                    <Menu size={24} />
+                    <Menu />
                 </button>
 
                 <Link to="/" className="flex items-center">

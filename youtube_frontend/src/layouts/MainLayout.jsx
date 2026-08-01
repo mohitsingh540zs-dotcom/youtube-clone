@@ -1,22 +1,39 @@
 import { Outlet } from "react-router-dom";
+import { useState } from "react";
+
 import Navbar from "../components/Navbar.jsx";
 import Sidebar from "../components/Sidebar.jsx";
-import { useState } from "react";
+import MobileSideBar from "../components/MobileSideBar.jsx";
 
 const MainLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     return (
-        <div className="min-h-screen">
-            <Navbar setIsSidebarOpen={setIsSidebarOpen} />
+        <div className="min-h-screen bg-white">
+
+            <Navbar
+                setIsSidebarOpen={setIsSidebarOpen}
+                setIsMobileOpen={setIsMobileOpen}
+            />
+
+            <MobileSideBar
+                open={isMobileOpen}
+                setOpen={setIsMobileOpen}
+            />
 
             <div className="flex">
-                <Sidebar isOpen={isSidebarOpen} />
 
-                <main className="flex-1 p-6">
+                <Sidebar
+                    isOpen={isSidebarOpen}
+                />
+
+                <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
                     <Outlet />
                 </main>
+
             </div>
+
         </div>
     );
 };
