@@ -9,7 +9,6 @@ export const register = async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-
         // existing user check
         const user = await User.findOne({ $or: [{ email }, { username }] });
 
