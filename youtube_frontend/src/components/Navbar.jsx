@@ -60,7 +60,7 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                 </button>
 
                 {/* Profile */}
-                <Link to={'/login'} className="rounded-full text-blue-500 hover:bg-gray-100 transition p-1 flex items-center gap-2 p-2">
+                <Link to={'/login'} className="rounded-full text-blue-500 hover:bg-gray-100 transition flex items-center gap-2 p-2">
                     <UserCircle size={30} /> Sign-In
                 </Link>
 
