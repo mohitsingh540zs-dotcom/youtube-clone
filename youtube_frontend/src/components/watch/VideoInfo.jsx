@@ -1,10 +1,11 @@
 import { Dot, Download, Share, Share2, ThumbsDown, ThumbsUp } from 'lucide-react'
 import React from 'react'
 
-const VideoInfo = () => {
+const VideoInfo = ({ video }) => {
+    console.log(video)
     return (
         <div className='flex flex-col gap-2 '>
-            <h1 className='font-bold text-2xl leading-snug'>Title</h1>
+            <h1 className='font-bold text-2xl leading-snug'>{video?.title}</h1>
 
             <div className='flex flex-col xl:flex-row xl:justify-between xl:items-center gap-4'>
                 <div className='flex items-center gap-8'>
@@ -12,7 +13,7 @@ const VideoInfo = () => {
                         <div className='w-12 h-12 rounded-full bg-black'></div>
 
                         <div className='flex flex-col'>
-                            <h2>Channel Name</h2>
+                            <h2>{video?.channel?.channelName}</h2>
                             <p>Total Subscribers</p>
                         </div>
                     </div>
@@ -23,7 +24,7 @@ const VideoInfo = () => {
                     <div className='bg-gray-300 flex items-center rounded-full'>
 
                         <button className='px-3 py-2 flex items-center gap-2 hover:bg-gray-200 transition rounded-l-full'>
-                            <ThumbsUp /> 30likes
+                            <ThumbsUp /> {video?.likes} likes
                         </button>
 
                         <div className="w-[2px] h-6 bg-gray-400"></div>

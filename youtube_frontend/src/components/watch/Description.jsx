@@ -1,17 +1,14 @@
 import { useState } from "react";
 
-const Description = () => {
+const Description = ({ video }) => {
     const [showMore, setShowMore] = useState(false);
-
-    const description =
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam porro laboriosam reprehenderit ipsum rem, laborum suscipit magni eos officiis. Quidem eius est beatae ratione aspernatur natus vero. Cupiditate, accusamus voluptate. Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, dolorem.";
 
     return (
         <div className="mt-5 bg-gray-100 rounded-2xl p-4">
 
             {/* Views & Date */}
             <div className="flex items-center gap-2 font-medium">
-                <span>654K views</span>
+                <span>{video?.views} views</span>
                 <span>•</span>
                 <span>2 days ago</span>
             </div>
@@ -21,7 +18,7 @@ const Description = () => {
                 className={`mt-3 whitespace-pre-line ${showMore ? "" : "line-clamp-3"
                     }`}
             >
-                {description}
+                {video?.description}
             </p>
 
             {/* Show More */}
