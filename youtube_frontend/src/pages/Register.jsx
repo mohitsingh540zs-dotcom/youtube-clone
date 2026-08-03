@@ -1,7 +1,52 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { data, Link, useNavigate } from 'react-router-dom'
+import { register } from '../api/auth';
 
 const Register = () => {
+
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    avatar: ""
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await register(formData);
+
+      if (data.message) {
+        console.log(data.message);
+      }
+
+      navigate('/login', { replace: true });
+
+    } catch (error) {
+      setError(error.response?.data?.message || "Register Failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-2">
 
@@ -18,7 +63,7 @@ const Register = () => {
           </p>
         </div>
 
-        <form className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {/* username */}
@@ -33,8 +78,11 @@ const Register = () => {
               <input
                 id="username"
                 name="username"
+                value={formData.value}
+                onChange={handleChange}
                 type="text"
                 placeholder="Enter your username"
+                required
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500"
               />
             </div>
@@ -52,7 +100,10 @@ const Register = () => {
                 id="email"
                 name="email"
                 type="email"
+                value={formData.value}
+                onChange={handleChange}
                 placeholder="Enter your email"
+                required
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500"
               />
             </div>
@@ -71,7 +122,10 @@ const Register = () => {
               id="password"
               name="password"
               type="password"
+              value={formData.value}
+              onChange={handleChange}
               placeholder="Enter your password"
+              required
               className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500"
             />
           </div>
@@ -89,11 +143,14 @@ const Register = () => {
               id="confirmPassword"
               name="confirmPassword"
               type="password"
+              value={formData.value}
+              onChange={handleChange}
               placeholder="Confirm your password"
+              required
               className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500"
             />
           </div>
-
+          {/* avatar */}
           <div>
             <label
               htmlFor="avatar"
@@ -105,18 +162,24 @@ const Register = () => {
             <input
               id="avatar"
               name="avatar"
+              onChange={handleChange}
               type="file"
               accept="image/*"
               className="w-full border border-gray-300 rounded-xl p-3 cursor-pointer"
             />
           </div>
+          {
+            error && (
+              <p className='text-red-500 font-semibold '>Already account exists</p>
+            )
+          }
 
           {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 rounded-xl"
           >
-            Register
+            {loading ? "Loading" : "Register"}
           </button>
 
           {/* Divider */}

@@ -1,12 +1,56 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await login(formData);
+
+      // Backend should return { success, user, message }
+      setUser(data);
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      setError(
+        error.response?.data?.message || "Login failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
 
       <div className="w-full max-w-md bg-white border rounded-2xl shadow-lg p-8">
 
-        {/* Heading */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold">
             Welcome Back
@@ -17,7 +61,10 @@ const Login = () => {
           </p>
         </div>
 
-        <form className="flex flex-col gap-5">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-5"
+        >
 
           {/* Email */}
           <div>
@@ -32,8 +79,10 @@ const Login = () => {
               id="email"
               name="email"
               type="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 transition"
             />
           </div>
 
@@ -50,12 +99,13 @@ const Login = () => {
               id="password"
               name="password"
               type="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter your password"
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 transition"
             />
           </div>
 
-          {/* Forgot Password */}
           <div className="flex justify-end">
             <Link
               to="/forgot-password"
@@ -65,22 +115,26 @@ const Login = () => {
             </Link>
           </div>
 
-          {/* Login Button */}
+          {error && (
+            <p className="text-red-500 text-sm">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 transition text-white font-semibold py-3 rounded-xl"
+            disabled={loading}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white font-semibold py-3 rounded-xl transition cursor-pointer"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
 
-          {/* Divider */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-300"></div>
             <span className="text-sm text-gray-500">OR</span>
             <div className="flex-1 h-px bg-gray-300"></div>
           </div>
 
-          {/* Register */}
           <p className="text-center text-sm">
             Don't have an account?{" "}
             <Link
