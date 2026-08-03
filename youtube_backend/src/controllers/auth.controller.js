@@ -1,56 +1,91 @@
 import User from "../models/User.js"
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js"
+import fs from "fs";
+import cloudinary from "../config/Cloudinary.js";
 
 // register user controller
+
 export const register = async (req, res) => {
 
-    // destructure the values 
     const { username, email, password } = req.body;
 
     try {
-        // existing user check
-        const user = await User.findOne({ $or: [{ email }, { username }] });
+        const existingUser = await User.findOne({
+            $or: [{ email }, { username }]
+        });
 
-        // if user exists then this will trigger and return already exists
-        if (user) {
+        if (existingUser) {
             return res.status(409).json({
                 success: false,
                 message: "Account already exists, Login please"
             });
         }
-        // hash the password for security purpose
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // create a new user with the details
-        const newUser = await User.create({
+        let avatar = "";
+
+        if (req.file) {
+
+            try {
+                const result = await cloudinary.uploader.upload(req.file.path, {
+                    folder: "youtube_backend/avatars",
+                    resource_type: "image",
+                });
+
+                console.log(result);
+
+                avatar = result.secure_url;
+
+                fs.unlinkSync(req.file.path);
+            } catch (err) {
+                console.error("UPLOAD ERROR:");
+                console.dir(err, { depth: null });
+
+                throw err;
+            }
+        }
+
+        await User.create({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            avatar
         });
 
-        // success response of successful creation
         return res.status(201).json({
             success: true,
             message: "User Registered Successfully"
         });
 
     } catch (error) {
-        // error handler 
+        // If upload succeeded but something later failed,
+        // also clean up the temp file.
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch { }
+        }
+        console.error(error);
+        console.error(error.message);
+        console.error(error.http_code);
+
         return res.status(500).json({
             success: false,
             message: error.message || "Internal Server Error"
         });
+
     }
-}
+};
 // login user controller
 export const login = async (req, res) => {
     // destruct the values from body
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
         // find the existing user 
-        const user = await User.findOne({ $and: [{ email }, { username }] }).select("+password");
+        const user = await User.findOne({ email }).select("+password");
 
         // if user not exists this will returns the message with register first
         if (!user) {
@@ -82,11 +117,14 @@ export const login = async (req, res) => {
         });
 
         // returning the success message
+        const userWithoutPassword = user.toObject();
+        delete userWithoutPassword.password;
+
         return res.status(200).json({
             success: true,
-            message: `Login Successfull, Welcome back ${user.username}`
+            message: `Login Successful, Welcome back ${user.username}`,
+            user: userWithoutPassword,
         });
-
     } catch (error) {
         // error handler
         return res.status(500).json({
