@@ -1,11 +1,14 @@
 const categories = [
+    "Programming",
+    "Entertainment",
+    "Music",
     "Education",
     "Gaming",
-    "Music",
     "Sports",
+    "Travel",
     "Technology",
-    "Entertainment",
-    "General"
+    "Lifestyle",
+    "News"
 ];
 
 const Categories = () => {

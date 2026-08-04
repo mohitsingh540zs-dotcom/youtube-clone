@@ -7,12 +7,13 @@ const VideoPlayer = ({ video }) => {
 
   return (
     <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
-      <iframe
+      {/* <iframe
         className="w-full h-full"
         src="https://www.youtube.com/embed/J9p5dUNbm5U"
         title="YouTube video player"
         allowFullScreen
-      />
+      /> */}
+      <video src={video?.videoUrl} controls className="w-full h-full"></video>
     </div>
   );
 };

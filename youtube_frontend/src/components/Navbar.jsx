@@ -24,7 +24,7 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
             console.log(error);
         }
     };
-    console.log(user)
+
 
     return (
         <header className="sticky top-0 z-50 h-16 bg-white border-b px-4 md:px-6 flex items-center justify-between gap-4">
@@ -89,27 +89,37 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                     <div
                         to="/profile"
                         onClick={() => setClicked(!clicked)}
-                        className="flex items-center cursor-pointer relative"
+                        className="flex items-center cursor-pointer relative w-10 h-10 rounded-full"
                     >
                         {user.avatar ? (
                             <img
                                 src={user.avatar}
                                 alt={user.username}
-                                className="w-10 h-10 rounded-full object-cover"
+                                className="w-full h-full rounded-full object-cover"
                             />
                         ) : (
-                            <UserCircle
-                                size={34}
-                                className="text-gray-700"
-                            />
+                            <div className="w-full h-full flex items-center justify-center bg-red-600 text-white text-xl font-bold rounded-full object-contain">
+                                {user?.username?.charAt(0).toUpperCase()}
+                            </div>
                         )}
 
                         {clicked && (
 
-                            <div onClick={(e) => e.stopPropagation()} className="absolute top-15 right-0 bg-gray-100 shadow-2xs rounded-xl p-2 flex flex-col gap-2">
+                            <div onClick={(e) => e.stopPropagation()} className="absolute top-15 right-0 bg-gray-100 shadow-2xs rounded-xl p-2 flex flex-col gap-2 border">
                                 <div className="flex items-center gap-4 border-b p-2">
+
                                     <div className="w-10 h-10 rounded-full ">
-                                        <img src={user.avatar} alt={user.username} className="w-full h-full object-cover rounded-full" />
+                                        {user?.avatar ? (
+                                            <img
+                                                src={user?.avatar}
+                                                alt={user?.username}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-red-600 text-white text-xl font-bold rounded-full">
+                                                {user?.username?.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
                                     </div>
                                     <div>
                                         <p>{user.email}</p>

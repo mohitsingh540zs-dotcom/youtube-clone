@@ -1,50 +1,97 @@
-import { Dot, Download, Share, Share2, ThumbsDown, ThumbsUp } from 'lucide-react'
-import React from 'react'
+import { Download, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const VideoInfo = ({ video }) => {
-    console.log(video)
+    const { user } = useAuth();
+
+    const isOwner = user?.channel === video?.channel?._id;
+
+    const channelLink = isOwner
+        ? "/profile"
+        : `/channel/${video?.channel?._id}`;
+
     return (
-        <div className='flex flex-col gap-2 '>
-            <h1 className='font-bold text-2xl leading-snug'>{video?.title}</h1>
+        <div className="flex flex-col gap-3">
 
-            <div className='flex flex-col xl:flex-row xl:justify-between xl:items-center gap-4'>
-                <div className='flex items-center gap-8'>
-                    <div className='flex items-center gap-2'>
-                        <div className='w-12 h-12 rounded-full bg-black'></div>
+            <h1 className="text-2xl font-bold">
+                {video?.title}
+            </h1>
 
-                        <div className='flex flex-col'>
-                            <h2>{video?.channel?.channelName}</h2>
-                            <p>Total Subscribers</p>
+            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+
+                {/* Left */}
+                <div className="flex items-center gap-6">
+
+                    <div className="flex items-center gap-3">
+
+                        <Link to={channelLink}>
+                            <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-300">
+                                <img
+                                    src={video?.owner?.avatar}
+                                    alt={video?.owner?.username}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        </Link>
+
+                        <div>
+                            <Link
+                                to={channelLink}
+                                className="font-semibold hover:underline"
+                            >
+                                {video?.channel?.channelName}
+                            </Link>
+
+                            <p className="text-sm text-gray-500">
+                                {video?.channel?.subscribers?.length || 0} subscribers
+                            </p>
                         </div>
-                    </div>
-                    <button className='bg-black px-6 py-2 text-white rounded-full font-medium hover:bg-gray-800 transition cursor-pointer'>Subscribe</button>
-                </div>
-
-                <div className='flex gap-4 items-center flex-wrap'>
-                    <div className='bg-gray-300 flex items-center rounded-full'>
-
-                        <button className='px-3 py-2 flex items-center gap-2 hover:bg-gray-200 transition rounded-l-full'>
-                            <ThumbsUp /> {video?.likes} likes
-                        </button>
-
-                        <div className="w-[2px] h-6 bg-gray-400"></div>
-                        <button className='px-3 py-2 hover:bg-gray-200 transition rounded-r-full'>
-                            <ThumbsDown />
-                        </button>
 
                     </div>
 
-                    <button className='px-3 py-2 bg-gray-300 rounded-full flex items-center gap-2 hover:bg-gray-200 transition'>
-                        <Share2 />  Share
+                    {!isOwner && (
+                        <button className="bg-black text-white px-5 py-2 rounded-full hover:bg-gray-800 transition">
+                            Subscribe
+                        </button>
+                    )}
+
+                </div>
+
+                {/* Right */}
+                <div className="flex flex-wrap gap-3">
+
+                    <div className="flex items-center bg-gray-100 rounded-full overflow-hidden">
+
+                        <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 transition">
+                            <ThumbsUp size={20} />
+                            {video?.likes?.length || 0}
+                        </button>
+
+                        <div className="w-px h-6 bg-gray-300" />
+
+                        <button className="px-4 py-2 hover:bg-gray-200 transition">
+                            <ThumbsDown size={20} />
+                        </button>
+
+                    </div>
+
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                        <Share2 size={20} />
+                        Share
                     </button>
 
-                    <button className='px-3 py-2 bg-gray-300 rounded-full flex items-center gap-2 hover:bg-gray-200 transition'>
-                        <Download />  Download
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                        <Download size={20} />
+                        Download
                     </button>
+
                 </div>
+
             </div>
-        </div>
-    )
-}
 
-export default VideoInfo
+        </div>
+    );
+};
+
+export default VideoInfo;

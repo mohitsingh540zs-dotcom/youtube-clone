@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const VideoCard = ({ video }) => {
-
+    console.log(video)
     return (
         <Link to={`/watch/${video._id}`} className='block p-2 rounded-xl hover:bg-gray-300'>
 
@@ -14,7 +14,7 @@ const VideoCard = ({ video }) => {
 
             <div className='flex gap-3 mt-2 items-center'>
                 <div className='w-10 h-10 rounded-full'>
-                    <img src={video.channel.banner ? video.channel.banner : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMiVAaZpXFUxG-SsGTbFP-TazT_8E1fYPzB3eveycuqA&s=10"} alt="" className='w-full h-full  object-fill rounded-full' />
+                    <img src={video?.owner?.avatar} alt={video?.owner?.username} className='w-full h-full  object-cover rounded-full' />
                 </div>
 
                 <div className='flex justify-start gap-2 flex-col'>

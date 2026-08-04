@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { getMyChannel } from "../api/channel";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 
 const Profile = () => {
+  const { user } = useAuth();
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasChannel, setHasChannel] = useState(true);
@@ -37,34 +40,58 @@ const Profile = () => {
 
   if (!hasChannel) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh] px-4">
-        <div className="max-w-lg text-center">
-          <div className="w-28 h-28 rounded-full bg-red-100 mx-auto flex items-center justify-center">
-            <span className="text-5xl">📺</span>
+      <div>
+        <div className="w-full max-w-7xl mx-auto flex items-center gap-4">
+
+          <div className="w-32 h-32 rounded-full overflow-hidden">
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.username}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-red-600 text-white flex items-center justify-center text-4xl font-bold">
+                {user?.username?.charAt(0)?.toUpperCase()}
+              </div>
+            )}
           </div>
 
-          <h1 className="text-3xl font-bold mt-8">
-            Create your Channel
-          </h1>
+          <div>
+            <p className="text-xl">{user?.email}</p>
+            <p className="text-lg">{user?.username}</p>
+          </div>
+        </div>
 
-          <p className="text-gray-500 mt-4">
-            Create a channel to upload videos, gain subscribers,
-            and build your audience.
-          </p>
+        <div className="flex items-center justify-center px-4">
 
-          <Link
-            to="/create-channel"
-            className="inline-block mt-8 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-semibold"
-          >
-            Create Channel
-          </Link>
+          <div className="max-w-lg text-center">
+            <div className="w-28 h-28 rounded-full bg-red-100 mx-auto flex items-center justify-center">
+              <span className="text-5xl">📺</span>
+            </div>
+
+            <h1 className="text-3xl font-bold mt-8">
+              Create your Channel
+            </h1>
+
+            <p className="text-gray-500 mt-4">
+              Create a channel to upload videos, gain subscribers,
+              and build your audience.
+            </p>
+            <Link
+              to="/create-channel"
+              className="inline-block mt-8 bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full font-semibold"
+            >
+              Create Channel
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="relative max-w-7xl mx-auto px-4 py-6">
 
       {/* Banner */}
       <div className="w-full h-52 md:h-64 rounded-2xl overflow-hidden bg-gray-300">
@@ -176,6 +203,7 @@ const Profile = () => {
         </Link>
 
       </div>
+
 
     </div>
   );

@@ -19,3 +19,13 @@ export const logout = async () => {
     const { data } = await api.post("/auth/logout");
     return data
 }
+
+export const updateAvatar = async (formData) => {
+    const { data } = await api.put("/auth/avatar", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+
+    return data;
+};
