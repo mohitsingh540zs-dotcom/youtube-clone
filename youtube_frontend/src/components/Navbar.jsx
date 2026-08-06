@@ -113,7 +113,7 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                                             <img
                                                 src={user?.avatar}
                                                 alt={user?.username}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-cover rounded-full"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-red-600 text-white text-xl font-bold rounded-full">
@@ -126,9 +126,9 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                                         <p>{user.username}</p>
                                     </div>
                                 </div>
-                                <button onClick={handleLogout} className=" w-full py-2 hover:bg-gray-300 rounded-full cursor-pointer">logout</button>
-
                                 <Link to={'/profile'} className="block text-center w-full py-2 hover:bg-gray-300 rounded-full cursor-pointer">profile</Link>
+                                <button onClick={handleLogout} className=" w-full py-2 hover:bg-gray-300 rounded-full cursor-pointer">logout</button>
+. 
                             </div>
                         )}
                     </div>

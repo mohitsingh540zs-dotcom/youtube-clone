@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getMyChannel } from "../api/channel";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getMyVideos } from "../api/video";
 
 
 const Profile = () => {
@@ -9,12 +10,16 @@ const Profile = () => {
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasChannel, setHasChannel] = useState(true);
+  const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    const fetchChannel = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getMyChannel();
-        setChannel(data);
+        const channelData = await getMyChannel();
+        setChannel(channelData);
+
+        const myVideos = await getMyVideos();
+        setVideos(myVideos);
       } catch (error) {
         if (error.response?.status === 404) {
           setHasChannel(false);
@@ -26,10 +31,9 @@ const Profile = () => {
       }
     };
 
-    fetchChannel();
+    fetchData();
   }, []);
 
-  console.log(channel)
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[80vh]">
@@ -185,24 +189,81 @@ const Profile = () => {
       </div>
 
       {/* Empty State */}
-      <div className="py-20 text-center">
+      {videos.length === 0 ? (
 
-        <h2 className="text-2xl font-semibold">
-          No videos uploaded
-        </h2>
+        <div className="py-20 text-center">
 
-        <p className="text-gray-500 mt-3">
-          Upload your first video and start growing your audience.
-        </p>
+          <h2 className="text-2xl font-semibold">
+            No videos uploaded
+          </h2>
 
-        <Link
-          to="/upload"
-          className="inline-block mt-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full"
-        >
-          Upload Video
-        </Link>
+          <p className="text-gray-500 mt-3">
+            Upload your first video and start growing your audience.
+          </p>
 
-      </div>
+          <Link
+            to="/upload"
+            className="inline-block mt-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-full"
+          >
+            Upload Video
+          </Link>
+
+        </div>
+
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+
+          {videos.map((video) => (
+
+            <div
+              key={video._id}
+              className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition"
+            >
+
+              <div className="relative">
+
+                <img
+                  src={video.thumbnail}
+                  className="aspect-video w-full object-cover"
+                />
+
+                <span className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
+                  {Math.floor(video.duration / 60)}:
+                  {(video.duration % 60).toString().padStart(2, "0")}
+                </span>
+
+              </div>
+
+              <div className="p-4">
+
+                <h2 className="font-semibold line-clamp-2">
+                  {video.title}
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-1">
+                  {video.views} views
+                </p>
+
+                <div className="flex gap-2 mt-4">
+
+                  <button  className="flex-1 bg-gray-200 py-2 rounded-lg">
+                    Edit
+                  </button>
+
+                  <button className="flex-1 bg-red-600 text-white py-2 rounded-lg">
+                    Delete
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+      )}
 
 
     </div>

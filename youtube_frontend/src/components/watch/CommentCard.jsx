@@ -1,7 +1,7 @@
 import { EllipsisVertical, Pencil, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const CommentCard = () => {
+const CommentCard = ({ comment }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -13,19 +13,28 @@ const CommentCard = () => {
             document.removeEventListener("click", closeMenu);
         };
     }, []);
+    console.log(comment);
 
     return (
         <div className="flex gap-3 py-4">
 
             {/* Avatar */}
-            <div className="w-10 h-10 rounded-full bg-black flex-shrink-0"></div>
+            <div className="w-10 h-10 rounded-full flex-shrink-0">
+                {comment?.owner?.avatar ? (
+                    <img src={comment?.owner?.avatar} alt={comment?.owner?.username} className="w-full h-full object-cover" />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-red-600 text-white font-bold rounded-full">
+                        {comment?.owner?.username.charAt(0).toUpperCase()}
+                    </div>
+                )}
+            </div>
 
             {/* Comment */}
             <div className="flex-1">
 
                 <div className="flex items-center gap-3">
                     <h3 className="font-semibold">
-                        @UserHandle
+                        {comment?.owner?.username}
                     </h3>
 
                     <span className="text-sm text-gray-500">
@@ -34,9 +43,7 @@ const CommentCard = () => {
                 </div>
 
                 <p className="mt-2 text-gray-800">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Velit iste, quia provident delectus veniam animi atque
-                    suscipit vero alias explicabo facere non incidunt!
+                    {comment?.text}
                 </p>
 
             </div>

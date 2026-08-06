@@ -18,7 +18,7 @@ const Watch = () => {
           <VideoPlayer video={video} />
           <VideoInfo video={video} />
           <Description video={video} />
-          <CommentSection />
+          <CommentSection videoId={id} />
         </div>
         <div className='xl:w-[380px] w-full overflow-y-auto'>
           <RelatedVideos videoId={video._id} />
