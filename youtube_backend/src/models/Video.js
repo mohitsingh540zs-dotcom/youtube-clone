@@ -36,13 +36,16 @@ const videoSchema = new mongoose.Schema({
     category: {
         type: String,
         enum: [
+            "Programming",
+            "Entertainment",
+            "Music",
             "Education",
             "Gaming",
-            "Music",
             "Sports",
+            "Travel",
             "Technology",
-            "Entertainment",
-            "General"
+            "Lifestyle",
+            "News"
         ],
         default: "General"
     },

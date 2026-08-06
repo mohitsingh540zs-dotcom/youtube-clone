@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
-import Channel from "../models/Channel.js";
+import fs from "fs";
+import cloudinary from "../config/Cloudinary.js";
 import Video from "../models/Video.js";
+import Channel from "../models/Channel.js";
 
 export const uploadVideo = async (req, res) => {
-    const { title, description, thumbnail, videoUrl, duration, category } = req.body;
+    const { title, description, category, duration } = req.body;
 
     try {
 
@@ -14,21 +16,54 @@ export const uploadVideo = async (req, res) => {
             });
         }
 
-        if (!title || !description || !thumbnail || !videoUrl || duration === undefined
-            || !category) {
+        if (!title || !description || !category || !duration) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             });
         }
 
+        if (
+            !req.files ||
+            !req.files.thumbnail ||
+            !req.files.video
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Thumbnail and video are required"
+            });
+        }
+
+        const thumbnailFile = req.files.thumbnail[0];
+        const videoFile = req.files.video[0];
+
+        const thumbnailUpload = await cloudinary.uploader.upload(
+            thumbnailFile.path,
+            {
+                folder: "youtube_clone/thumbnails",
+                resource_type: "image"
+            }
+        );
+
+        const videoUpload = await cloudinary.uploader.upload(
+            videoFile.path,
+            {
+                folder: "youtube_clone/videos",
+                resource_type: "video"
+            }
+        );
+
+        fs.unlinkSync(thumbnailFile.path);
+        fs.unlinkSync(videoFile.path);
+
         const newVideo = await Video.create({
             title,
             description,
-            thumbnail,
-            videoUrl,
-            duration,
             category,
+            duration: Math.round(videoUpload.duration),
+            thumbnail: thumbnailUpload.secure_url,
+            videoUrl: videoUpload.secure_url,
+            owner: req.user._id,
             channel: req.user.channel
         });
 
@@ -40,17 +75,28 @@ export const uploadVideo = async (req, res) => {
 
     } catch (error) {
 
+        if (req.files?.thumbnail) {
+            try {
+                fs.unlinkSync(req.files.thumbnail[0].path);
+            } catch { }
+        }
+
+        if (req.files?.video) {
+            try {
+                fs.unlinkSync(req.files.video[0].path);
+            } catch { }
+        }
+
         return res.status(500).json({
             success: false,
             message: error.message || "Internal Server Error"
         });
-
     }
 };
 
 export const getVideos = async (req, res) => {
     try {
-        const videos = await Video.find().populate("channel", "channelName banner").sort({ createdAt: -1 });
+        const videos = await Video.find().populate("channel", "channelName banner subscribers").populate("owner", "username avatar").sort({ createdAt: -1 });
 
         if (videos.length === 0) {
             return res.status(200).json({
@@ -77,18 +123,27 @@ export const getVideoById = async (req, res) => {
     const { id } = req.params;
 
     try {
+
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid Video Id"
+                message: "Invalid video id"
             });
         }
 
         const video = await Video.findByIdAndUpdate(
             id,
-            { $inc: { views: 1 } },
-            { new: true }
-        ).populate("channel", "channelName banner");
+            {
+                $inc: {
+                    views: 1
+                }
+            },
+            {
+                new: true
+            }
+        )
+            .populate("owner", "username avatar")
+            .populate("channel", "channelName banner subscribers");
 
         if (!video) {
             return res.status(404).json({
@@ -104,12 +159,14 @@ export const getVideoById = async (req, res) => {
         });
 
     } catch (error) {
+
         return res.status(500).json({
             success: false,
             message: error.message || "Internal Server Error"
         });
+
     }
-}
+};
 
 export const updateVideo = async (req, res) => {
     const { id } = req.params;
@@ -118,14 +175,7 @@ export const updateVideo = async (req, res) => {
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid Video Id"
-            });
-        }
-
-        if (!req.user.channel) {
-            return res.status(404).json({
-                success: false,
-                message: "You don't have channel"
+                message: "Invalid video id"
             });
         }
 
@@ -138,34 +188,51 @@ export const updateVideo = async (req, res) => {
             });
         }
 
-        // Authority check
-        if (req.user.channel.toString() !== video.channel.toString()) {
+        // Authorization
+        if (video.owner.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
-                message: "Forbidden, You are not authorized to do this."
+                message: "You are not authorized to update this video"
             });
         }
 
-        const allowedFields = [
-            "title",
-            "description",
-            "thumbnail",
-            "videoUrl",
-            "duration",
-            "category"
+        const allowedCategories = [
+            "Programming",
+            "Entertainment",
+            "Music",
+            "Education",
+            "Gaming",
+            "Sports",
+            "Travel",
+            "Technology",
+            "Lifestyle",
+            "News"
         ];
 
-        for (const key of allowedFields) {
-            if (req.body[key] !== undefined) {
-                video[key] = req.body[key];
+        if (req.body.title !== undefined) {
+            video.title = req.body.title.trim();
+        }
+
+        if (req.body.description !== undefined) {
+            video.description = req.body.description.trim();
+        }
+
+        if (req.body.category !== undefined) {
+            if (!allowedCategories.includes(req.body.category)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid category"
+                });
             }
+
+            video.category = req.body.category;
         }
 
         await video.save();
 
         return res.status(200).json({
             success: true,
-            message: "Video Updated Sucessfully",
+            message: "Video updated successfully",
             video
         });
 
@@ -175,41 +242,34 @@ export const updateVideo = async (req, res) => {
             message: error.message || "Internal Server Error"
         });
     }
-}
+};
 
 export const deleteVideo = async (req, res) => {
+
     const { id } = req.params;
 
     try {
+
         if (!mongoose.isValidObjectId(id)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid Video Id"
+                message: "Invalid video id"
             });
         }
 
-        if (!req.user.channel) {
-            return res.status(404).json(
-                {
-                    success: false,
-                    message: "Channel not found"
-                }
-            )
-        }
-
-        const video = await Video.findByIdAndDelete(id);
-
-        if (req.user.channel.toString() !== video.channel.toString()) {
-            return res.status(403).json({
-                success: false,
-                message: "You are not authorized to do this."
-            });
-        }
+        const video = await Video.findById(id);
 
         if (!video) {
             return res.status(404).json({
                 success: false,
                 message: "Video not found"
+            });
+        }
+
+        if (video.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized"
             });
         }
 
@@ -220,14 +280,16 @@ export const deleteVideo = async (req, res) => {
             message: "Video deleted successfully"
         });
 
-
     } catch (error) {
+
         return res.status(500).json({
             success: false,
             message: error.message || "Internal Server Error"
         });
+
     }
-}
+
+};
 
 export const searchVideo = async (req, res) => {
     const { title } = req.query;
@@ -324,3 +386,33 @@ export const categoryFilter = async (req, res) => {
         });
     }
 }
+
+export const getMyVideos = async (req, res) => {
+    try {
+        if (!req.user.channel) {
+            return res.status(404).json({
+                success: false,
+                message: "You don't have a channel"
+            });
+        }
+
+        const videos = await Video.find({
+            channel: req.user.channel
+        })
+            .populate("channel", "channelName banner")
+            .populate("owner", "username avatar")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            message: "Videos fetched successfully",
+            videos
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal Server Error"
+        });
+    }
+};

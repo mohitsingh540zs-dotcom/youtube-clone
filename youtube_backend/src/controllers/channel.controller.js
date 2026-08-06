@@ -2,58 +2,92 @@ import User from "../models/User.js"
 import Channel from "../models/Channel.js"
 import mongoose from "mongoose";
 import Video from "../models/Video.js";
+import cloudinary from "../config/Cloudinary.js";
+import fs from "fs";
 
-// channel creater controller
 export const createChannel = async (req, res) => {
     try {
-        // get the value first from body
-        const { channelName, description, banner } = req.body;
+        const { channelName, description } = req.body;
 
-        if (!channelName) {
+        // Validation
+        if (!channelName?.trim()) {
             return res.status(400).json({
                 success: false,
-                message: "Channel name required"
+                message: "Channel name is required"
             });
         }
 
+        // User already has a channel
         if (req.user.channel) {
             return res.status(409).json({
                 success: false,
-                message: "Channel already exists"
+                message: "You already have a channel"
             });
         }
 
-        const existingCName = await Channel.findOne({ channelName });
-        if (existingCName) {
+        // Channel name already taken
+        const existingChannel = await Channel.findOne({ channelName });
+
+        if (existingChannel) {
             return res.status(409).json({
                 success: false,
                 message: "Channel name already exists"
             });
         }
 
+        let banner = "";
+
+        // Upload banner if provided
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "youtube_backend/channel_banners",
+            });
+
+            banner = result.secure_url;
+
+            // Delete temp file
+            fs.unlinkSync(req.file.path);
+        }
+
+        // Create channel
         const newChannel = await Channel.create({
             channelName,
             description,
             banner,
-            owner: req.user._id
+            owner: req.user._id,
         });
 
+        // Save channel id in user
         req.user.channel = newChannel._id;
         await req.user.save();
+
+        // Populate owner to return avatar & username
+        const channel = await Channel.findById(newChannel._id)
+            .populate("owner", "username avatar");
 
         return res.status(201).json({
             success: true,
             message: "Channel created successfully",
-            channel: newChannel
+            channel,
         });
 
     } catch (error) {
+
+        // Delete temp file if upload failed midway
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch { }
+        }
+
+        console.error(error);
+
         return res.status(500).json({
             success: false,
-            message: error.message || "Internal Server Error"
+            message: error.message || "Internal Server Error",
         });
     }
-}
+};
 
 // channel getter controller
 export const getChannel = async (req, res) => {
@@ -261,7 +295,9 @@ export const getVideosByChannel = async (req, res) => {
             });
         }
 
-        const channel = await Channel.findById(id).populate("owner", "username avatar");
+        const channel = await Channel.findById(id)
+            .populate("owner", "username avatar");
+
         if (!channel) {
             return res.status(404).json({
                 success: false,
@@ -271,11 +307,14 @@ export const getVideosByChannel = async (req, res) => {
 
         const videos = await Video.find({
             channel: id
-        }).sort({ createdAt: -1 });
+        })
+            .populate("owner", "username avatar")
+            .populate("channel", "channelName banner")
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
-            message: "Videos found successfully",
+            message: "Channel fetched successfully",
             channel,
             videos
         });
@@ -286,4 +325,4 @@ export const getVideosByChannel = async (req, res) => {
             message: error.message || "Internal Server Error"
         });
     }
-}
+};

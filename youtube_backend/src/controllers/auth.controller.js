@@ -157,3 +157,50 @@ export const logout = (req, res) => {
         message: "User logged out successfully"
     });
 }
+// updateAvatar controller
+export const updateAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Please upload an avatar"
+            });
+        }
+
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "youtube_backend/avatars",
+            resource_type: "image",
+        });
+
+        fs.unlinkSync(req.file.path);
+
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                avatar: result.secure_url
+            },
+            {
+                new: true
+            }
+        ).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            message: "Avatar updated successfully",
+            user
+        });
+
+    } catch (error) {
+
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch { }
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};

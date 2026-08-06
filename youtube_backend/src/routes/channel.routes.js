@@ -1,10 +1,16 @@
 import express from "express";
 import { createChannel, deleteChannel, getChannel, getMyChannel, getVideosByChannel, searchChannel, updateChannel } from "../controllers/channel.controller.js";
 import isAuthenticated from "../middleware/isAuthenticated.js"
+import upload from "../middleware/multer.js";
 
 const channelRoute = express.Router();
 
-channelRoute.post('/create', isAuthenticated, createChannel);
+channelRoute.post(
+    "/create",
+    isAuthenticated,
+    upload.single("banner"),
+    createChannel
+);
 
 channelRoute.get('/search', searchChannel);
 channelRoute.get('/get-me', isAuthenticated, getMyChannel);
