@@ -10,6 +10,8 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
     const { user, setUser } = useAuth();
     const navigate = useNavigate();
     const [clicked, setClicked] = useState(false);
+    const [open, setOpen] = useState(false);
+
 
     const handleLogout = async () => {
         try {
@@ -24,6 +26,8 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
             console.log(error);
         }
     };
+
+
 
 
     return (
@@ -67,13 +71,23 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                 </button>
 
                 {/* Create Button */}
-                <button className="hidden sm:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition px-4 py-2 rounded-full">
+                <button onClick={() => { setOpen(!open) }} className="hidden sm:flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition px-4 py-2 rounded-full cursor-pointer">
 
                     <Plus size={20} />
 
-                    <span className="font-medium">
-                        Create
-                    </span>
+                    <div className="relative ">
+
+                        <span className="font-medium">
+                            Create
+                        </span>
+
+                        {open && (
+
+                            <div className="absolute top-10 right-5 rounded-xl p-4 bg-gray-200 font-semibold">
+                                <Link to={'/upload'} className="">Upload</Link>
+                            </div>
+                        )}
+                    </div>
 
                 </button>
 
@@ -127,8 +141,8 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                                     </div>
                                 </div>
                                 <Link to={'/profile'} className="block text-center w-full py-2 hover:bg-gray-300 rounded-full cursor-pointer">profile</Link>
+
                                 <button onClick={handleLogout} className=" w-full py-2 hover:bg-gray-300 rounded-full cursor-pointer">logout</button>
-. 
                             </div>
                         )}
                     </div>

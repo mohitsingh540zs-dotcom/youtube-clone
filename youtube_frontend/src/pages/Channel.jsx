@@ -25,22 +25,31 @@ const Channel = () => {
 
   }, [id]);
 
-  console.log(channel)
-  console.log(videos)
+  if (!channel) {
+    return (
+
+      <div>Channel not found</div>
+    )
+  }
+
   return (
     <div className='max-w-7xl mx-auto'>
 
       {/* banner */}
       <div className='w-full h-52 md:h-64 bg-gray-300 rounded-xl'>
-        <img src={channel?.banner} alt="" className='w-full h-full object-cover' />
+        <img src={channel?.banner} alt={channel?.owner?.username} className='w-full h-full object-cover rounded-xl' />
       </div>
 
       {/* profile */}
       <div className='flex flex-col lg:flex-row lg:items-end gap-6 -mt-16 md:-mt-20 px-4'>
 
         {/* avatar */}
-        <div className='w-36 h-36 md:w-44 md:h-44 bg-black rounded-full '>
-          <img src={channel?.owner?.avatar} alt={channel?.owner?.username} className='w-full h-full object-cover rounded-full' />
+        <div className='w-36 h-36 md:w-44 md:h-44 rounded-full '>
+          {channel?.owner?.avatar ? (
+            <img src={channel?.owner?.avatar} alt={channel?.owner?.username} className='w-full h-full object-cover rounded-full' />
+          ) : (
+            <div className='w-full h-full rounded-full text-5xl flex items-center justify-center bg-red-500 text-white font-bold'>{channel?.owner?.username.charAt(0).toUpperCase()}</div>
+          )}
         </div>
 
         {/* info */}

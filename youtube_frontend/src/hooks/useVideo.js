@@ -15,6 +15,7 @@ const useVideo = (id) => {
 
                 setVideo(data.video);
             } catch (error) {
+                setVideo(null);
                 setError(error.response?.data.message || "Something Went Wrong");
             }
             finally {

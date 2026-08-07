@@ -17,6 +17,7 @@ const Home = () => {
       <h1>{error}</h1>
     )
   }
+
   return (
     <div className='space-y-6'>
       <Categories />

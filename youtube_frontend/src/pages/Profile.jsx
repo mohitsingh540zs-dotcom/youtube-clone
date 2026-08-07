@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getMyChannel } from "../api/channel";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getMyVideos } from "../api/video";
+import { deleteVideo, getMyVideos } from "../api/video";
 
 
 const Profile = () => {
@@ -12,27 +12,44 @@ const Profile = () => {
   const [hasChannel, setHasChannel] = useState(true);
   const [videos, setVideos] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const channelData = await getMyChannel();
-        setChannel(channelData);
+  const fetchData = async () => {
+    try {
+      const channelData = await getMyChannel();
+      setChannel(channelData);
 
-        const myVideos = await getMyVideos();
-        setVideos(myVideos);
-      } catch (error) {
-        if (error.response?.status === 404) {
-          setHasChannel(false);
-        } else {
-          console.log(error);
-        }
-      } finally {
-        setLoading(false);
+      const myVideos = await getMyVideos();
+      setVideos(myVideos);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setHasChannel(false);
+      } else {
+        console.log(error);
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+
+    const confirmDelete = window.confirm(
+      "Delete this comment?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteVideo(id);
+      fetchData();
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (loading) {
     return (
@@ -246,11 +263,11 @@ const Profile = () => {
 
                 <div className="flex gap-2 mt-4">
 
-                  <button  className="flex-1 bg-gray-200 py-2 rounded-lg">
+                  <button className="flex-1 bg-gray-200 py-2 rounded-lg">
                     Edit
                   </button>
 
-                  <button className="flex-1 bg-red-600 text-white py-2 rounded-lg">
+                  <button onClick={() => { handleDelete(video._id) }} className="flex-1 bg-red-600 text-white py-2 rounded-lg">
                     Delete
                   </button>
 

@@ -13,5 +13,17 @@ export const getAllComments = async (id) => {
     return data;
 }
 
+export const deleteComment = async (id) => {
+    const { data } = await api.delete(`comment/delete/${id}`);
+    return data;
+}
+
+export const updateComment = async (id, text) => {
+    const { data } = await api.patch(`comment/update/${id}`, {
+        text
+    });
+
+    return data;
+}
 
 

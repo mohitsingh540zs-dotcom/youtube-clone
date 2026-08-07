@@ -13,7 +13,7 @@ export const getChannel = async (id) => {
     return data.channel;
 };
 
-export const getVideosByChannel = async(id) =>{
-    const {data} = await api.get(`/channel/${id}/videos`);
+export const getVideosByChannel = async (id) => {
+    const { data } = await api.get(`/channel/${id}/videos`);
     return data;
 }

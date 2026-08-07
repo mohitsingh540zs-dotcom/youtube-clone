@@ -27,11 +27,15 @@ const VideoInfo = ({ video }) => {
 
                         <Link to={channelLink}>
                             <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-300">
-                                <img
-                                    src={video?.owner?.avatar}
-                                    alt={video?.owner?.username}
-                                    className="w-full h-full object-cover"
-                                />
+                                {video?.owner?.avatar ? (
+                                    <img
+                                        src={video?.owner?.avatar}
+                                        alt={video?.owner?.username}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-red-500 text-white font-bold flex items-center justify-center rounded-full text-xl">{video?.owner?.username.charAt(0).toUpperCase()}</div>
+                                )}
                             </div>
                         </Link>
 

@@ -19,3 +19,8 @@ export const getMyVideos = async () => {
     const { data } = await api.get("/videos/getMyVideos");
     return data.videos;
 }
+
+export const deleteVideo = async (id) => {
+    const { data } = await api.delete(`/videos/delete/${id}`);
+    return data;
+}
