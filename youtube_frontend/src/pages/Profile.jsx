@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { getMyChannel } from "../api/channel";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { deleteVideo, getMyVideos } from "../api/video";
+import { deleteVideo, editVideo, getMyVideos } from "../api/video";
+import { categories } from "../utils/data";
+import { X } from "lucide-react";
 
 
 const Profile = () => {
@@ -11,6 +13,24 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [hasChannel, setHasChannel] = useState(true);
   const [videos, setVideos] = useState([]);
+  const [editingVideo, setEditingVideo] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    category: "General"
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev, [name]: value
+    }));
+  }
+
 
   const fetchData = async () => {
     try {
@@ -34,10 +54,29 @@ const Profile = () => {
     fetchData();
   }, []);
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    if (!editingVideo) return;
+
+    try {
+      await editVideo(editingVideo._id, formData);
+
+      setOpenModal(false);
+      setEditingVideo(null);
+
+      await fetchData();
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
   const handleDelete = async (id) => {
 
     const confirmDelete = window.confirm(
-      "Delete this comment?"
+      "Delete this Video?"
     );
 
     if (!confirmDelete) return;
@@ -263,11 +302,21 @@ const Profile = () => {
 
                 <div className="flex gap-2 mt-4">
 
-                  <button className="flex-1 bg-gray-200 py-2 rounded-lg">
+                  <button onClick={() => {
+                    setEditingVideo(video);
+
+                    setFormData({
+                      title: video.title,
+                      description: video.description,
+                      category: video.category,
+                    });
+
+                    setOpenModal(true);
+                  }} className="text-center flex-1 bg-gray-200 py-2 rounded-lg cursor-pointer">
                     Edit
                   </button>
 
-                  <button onClick={() => { handleDelete(video._id) }} className="flex-1 bg-red-600 text-white py-2 rounded-lg">
+                  <button onClick={() => { handleDelete(video._id) }} className="flex-1 bg-red-600 text-white py-2 rounded-lg cursor-pointer">
                     Delete
                   </button>
 
@@ -281,7 +330,67 @@ const Profile = () => {
 
         </div>
       )}
+      {openModal && (
 
+        <div className="fixed inset-0 bg-black/30 flex justify-center items-center">
+          <div className="relative w-full max-w-lg p-4">
+
+            <div className="absolute right-5 top-5">
+              <X onClick={() => setOpenModal(false)} className="cursor-pointer" />
+            </div>
+
+            <form onSubmit={handleUpdate} className="bg-white space-y-6 rounded-xl p-4">
+
+              <div>
+
+                <label className="block mb-2 font-medium ">Title</label>
+                <input type="text" name="title" className="border border-gray-400 w-full rounded-xl py-3 px-2 outline-none" value={formData.title} onChange={handleChange} required />
+
+              </div>
+
+              <div>
+
+                <label className="block mb-2 font-medium">Description</label>
+                <textarea
+                  rows={5}
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Describe your video..."
+                  className="w-full border border-gray-400 rounded-xl p-3 resize-none outline-none focus:border-red-500"
+                  required
+                />
+
+              </div>
+
+              <div>
+                <label className="block mb-2 font-medium">Category</label>
+
+                <select value={formData.category} onChange={handleChange} name="category" className="w-full border border-gray-400 p-3 rounded-xl outline-none focus:border-red-400">
+                  {categories.map((category) => (
+                    <option
+                      key={category}
+                      value={category}
+                    >
+                      {category}
+                    </option>
+                  ))}
+                </select>
+
+              </div>
+
+              <div className="flex justify-end gap-4">
+                <button type="reset" className="bg-gray-500 px-4 py-2 text-lg rounded-lg font-bold text-white">Cancel</button>
+
+                <button type="submit" className="bg-red-500 px-4 py-2 text-lg rounded-lg font-bold text-white">Save</button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      )}
 
     </div>
   );

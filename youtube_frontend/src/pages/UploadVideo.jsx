@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { uploadVideo } from "../api/video";
+import { categories } from "../utils/data"
 
 const UploadVideo = () => {
   const navigate = useNavigate();
@@ -18,18 +19,6 @@ const UploadVideo = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const categories = [
-    "Programming",
-    "Entertainment",
-    "Music",
-    "Education",
-    "Gaming",
-    "Sports",
-    "Travel",
-    "Technology",
-    "Lifestyle",
-    "News"
-  ];
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;

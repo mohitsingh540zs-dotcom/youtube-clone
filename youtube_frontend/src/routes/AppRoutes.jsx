@@ -14,6 +14,7 @@ import NotFound from "../pages/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx"
 import CreateChannel from "../pages/CreateChannel.jsx";
 
+
 const AppRoutes = createBrowserRouter([
     {
         element: <AuthLayout />,
@@ -71,7 +72,7 @@ const AppRoutes = createBrowserRouter([
                 ),
             },
             {
-                path: "/edit-channel",
+                path: "/edit-channel/:id",
                 element: (
                     <ProtectedRoute>
                         <EditChannel />

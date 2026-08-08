@@ -24,3 +24,9 @@ export const deleteVideo = async (id) => {
     const { data } = await api.delete(`/videos/delete/${id}`);
     return data;
 }
+
+export const editVideo = async (id, formData) => {
+    const { data } = await api.patch(`/videos/update/${id}`, formData);
+    return data;
+
+}

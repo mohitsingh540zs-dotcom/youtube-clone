@@ -8,14 +8,19 @@ const RelatedVideos = ({ videoId }) => {
 
     if (loading) {
         return (
-            <h1>Loading...</h1>
+            <h1 className="text-lg bg-gray-500">Loading...</h1>
         )
     }
+
     return (
         <div className="w-full flex flex-col gap-4 p-2">
-            {relatedVideos.map((video) => (
-                <RelatedVideoCard key={video._id} video={video} />
-            ))}
+            {relatedVideos.length > 0 ? (
+                relatedVideos.map((video) => (
+                    <RelatedVideoCard key={video._id} video={video} />
+                ))
+            ) : (
+                <div className="text-center text-lg text-gray-500">No Related Videos Exists for now..</div>
+            )}
         </div>
     )
 }
