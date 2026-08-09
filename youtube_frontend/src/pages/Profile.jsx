@@ -6,7 +6,6 @@ import { deleteVideo, editVideo, getMyVideos } from "../api/video";
 import { categories } from "../utils/data";
 import { X } from "lucide-react";
 
-
 const Profile = () => {
   const { user } = useAuth();
   const [channel, setChannel] = useState(null);
@@ -16,21 +15,20 @@ const Profile = () => {
   const [editingVideo, setEditingVideo] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "General"
+    category: "General",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({
-      ...prev, [name]: value
+      ...prev,
+      [name]: value,
     }));
-  }
-
+  };
 
   const fetchData = async () => {
     try {
@@ -66,29 +64,23 @@ const Profile = () => {
       setEditingVideo(null);
 
       await fetchData();
-
     } catch (error) {
       console.log(error);
     }
-
   };
 
   const handleDelete = async (id) => {
-
-    const confirmDelete = window.confirm(
-      "Delete this Video?"
-    );
+    const confirmDelete = window.confirm("Delete this Video?");
 
     if (!confirmDelete) return;
 
     try {
       await deleteVideo(id);
       fetchData();
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -102,8 +94,7 @@ const Profile = () => {
     return (
       <div>
         <div className="w-full max-w-7xl mx-auto flex items-center gap-4">
-
-          <div className="w-32 h-32 rounded-full overflow-hidden">
+          <div className="w-32 h-32 rounded-full overflow-hidden border border-gray-400">
             {user?.avatar ? (
               <img
                 src={user.avatar}
@@ -124,19 +115,16 @@ const Profile = () => {
         </div>
 
         <div className="flex items-center justify-center px-4">
-
           <div className="max-w-lg text-center">
             <div className="w-28 h-28 rounded-full bg-red-100 mx-auto flex items-center justify-center">
               <span className="text-5xl">📺</span>
             </div>
 
-            <h1 className="text-3xl font-bold mt-8">
-              Create your Channel
-            </h1>
+            <h1 className="text-3xl font-bold mt-8">Create your Channel</h1>
 
             <p className="text-gray-500 mt-4">
-              Create a channel to upload videos, gain subscribers,
-              and build your audience.
+              Create a channel to upload videos, gain subscribers, and build
+              your audience.
             </p>
             <Link
               to="/create-channel"
@@ -152,7 +140,6 @@ const Profile = () => {
 
   return (
     <div className="relative max-w-7xl mx-auto px-4 py-6">
-
       {/* Banner */}
       <div className="w-full h-52 md:h-64 rounded-2xl overflow-hidden bg-gray-300">
         {channel?.banner ? (
@@ -168,7 +155,6 @@ const Profile = () => {
 
       {/* Profile */}
       <div className="flex flex-col lg:flex-row lg:items-end gap-6 -mt-16 md:-mt-20 px-4">
-
         {/* Avatar */}
         <div className="w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden border-4 border-white bg-gray-200 shadow-lg">
           {channel?.owner?.avatar ? (
@@ -186,7 +172,6 @@ const Profile = () => {
 
         {/* Info */}
         <div className="flex-1">
-
           <h1 className="text-3xl font-bold lg:mt-20">
             {channel?.channelName}
           </h1>
@@ -196,9 +181,7 @@ const Profile = () => {
 
             <span>•</span>
 
-            <span>
-              {channel?.subscribers?.length || 0} subscribers
-            </span>
+            <span>{channel?.subscribers?.length || 0} subscribers</span>
           </div>
 
           <p className="mt-4 text-gray-700">
@@ -206,10 +189,8 @@ const Profile = () => {
           </p>
 
           <p className="mt-3 text-sm text-gray-500">
-            Joined{" "}
-            {new Date(channel?.createdAt).toLocaleDateString()}
+            Joined {new Date(channel?.createdAt).toLocaleDateString()}
           </p>
-
         </div>
 
         {/* Buttons */}
@@ -222,36 +203,27 @@ const Profile = () => {
           </Link>
 
           <Link
-            to="/edit-channel"
+            to={`/edit-channel`}
             className="bg-gray-200 hover:bg-gray-300 px-6 py-3 rounded-full"
           >
             Edit Channel
           </Link>
         </div>
-
       </div>
 
       {/* Tabs */}
       <div className="mt-10 border-b">
         <div className="flex gap-8 font-medium">
-          <button className="border-b-2 border-black pb-3">
-            Videos
-          </button>
+          <button className="border-b-2 border-black pb-3">Videos</button>
 
-          <button className="pb-3 text-gray-500 hover:text-black">
-            About
-          </button>
+          <button className="pb-3 text-gray-500 hover:text-black">About</button>
         </div>
       </div>
 
       {/* Empty State */}
       {videos.length === 0 ? (
-
         <div className="py-20 text-center">
-
-          <h2 className="text-2xl font-semibold">
-            No videos uploaded
-          </h2>
+          <h2 className="text-2xl font-semibold">No videos uploaded</h2>
 
           <p className="text-gray-500 mt-3">
             Upload your first video and start growing your audience.
@@ -263,21 +235,15 @@ const Profile = () => {
           >
             Upload Video
           </Link>
-
         </div>
-
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-
           {videos.map((video) => (
-
             <div
               key={video._id}
               className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition"
             >
-
               <div className="relative">
-
                 <img
                   src={video.thumbnail}
                   className="aspect-video w-full object-cover"
@@ -287,69 +253,74 @@ const Profile = () => {
                   {Math.floor(video.duration / 60)}:
                   {(video.duration % 60).toString().padStart(2, "0")}
                 </span>
-
               </div>
 
               <div className="p-4">
-
-                <h2 className="font-semibold line-clamp-2">
-                  {video.title}
-                </h2>
+                <h2 className="font-semibold line-clamp-2">{video.title}</h2>
 
                 <p className="text-sm text-gray-500 mt-1">
                   {video.views} views
                 </p>
 
                 <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() => {
+                      setEditingVideo(video);
 
-                  <button onClick={() => {
-                    setEditingVideo(video);
+                      setFormData({
+                        title: video.title,
+                        description: video.description,
+                        category: video.category,
+                      });
 
-                    setFormData({
-                      title: video.title,
-                      description: video.description,
-                      category: video.category,
-                    });
-
-                    setOpenModal(true);
-                  }} className="text-center flex-1 bg-gray-200 py-2 rounded-lg cursor-pointer">
+                      setOpenModal(true);
+                    }}
+                    className="text-center flex-1 bg-gray-200 py-2 rounded-lg cursor-pointer"
+                  >
                     Edit
                   </button>
 
-                  <button onClick={() => { handleDelete(video._id) }} className="flex-1 bg-red-600 text-white py-2 rounded-lg cursor-pointer">
+                  <button
+                    onClick={() => {
+                      handleDelete(video._id);
+                    }}
+                    className="flex-1 bg-red-600 text-white py-2 rounded-lg cursor-pointer"
+                  >
                     Delete
                   </button>
-
                 </div>
-
               </div>
-
             </div>
-
           ))}
-
         </div>
       )}
       {openModal && (
-
         <div className="fixed inset-0 bg-black/30 flex justify-center items-center">
           <div className="relative w-full max-w-lg p-4">
-
             <div className="absolute right-5 top-5">
-              <X onClick={() => setOpenModal(false)} className="cursor-pointer" />
+              <X
+                onClick={() => setOpenModal(false)}
+                className="cursor-pointer"
+              />
             </div>
 
-            <form onSubmit={handleUpdate} className="bg-white space-y-6 rounded-xl p-4">
-
+            <form
+              onSubmit={handleUpdate}
+              className="bg-white space-y-6 rounded-xl p-4"
+            >
               <div>
-
                 <label className="block mb-2 font-medium ">Title</label>
-                <input type="text" name="title" className="border border-gray-400 w-full rounded-xl py-3 px-2 outline-none" value={formData.title} onChange={handleChange} required />
-
+                <input
+                  type="text"
+                  name="title"
+                  className="border border-gray-400 w-full rounded-xl py-3 px-2 outline-none"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
               <div>
-
                 <label className="block mb-2 font-medium">Description</label>
                 <textarea
                   rows={5}
@@ -360,38 +331,44 @@ const Profile = () => {
                   className="w-full border border-gray-400 rounded-xl p-3 resize-none outline-none focus:border-red-500"
                   required
                 />
-
               </div>
 
               <div>
                 <label className="block mb-2 font-medium">Category</label>
 
-                <select value={formData.category} onChange={handleChange} name="category" className="w-full border border-gray-400 p-3 rounded-xl outline-none focus:border-red-400">
+                <select
+                  value={formData.category}
+                  onChange={handleChange}
+                  name="category"
+                  className="w-full border border-gray-400 p-3 rounded-xl outline-none focus:border-red-400"
+                >
                   {categories.map((category) => (
-                    <option
-                      key={category}
-                      value={category}
-                    >
+                    <option key={category} value={category}>
                       {category}
                     </option>
                   ))}
                 </select>
-
               </div>
 
               <div className="flex justify-end gap-4">
-                <button type="reset" className="bg-gray-500 px-4 py-2 text-lg rounded-lg font-bold text-white">Cancel</button>
+                <button
+                  type="reset"
+                  className="bg-gray-500 px-4 py-2 text-lg rounded-lg font-bold text-white"
+                >
+                  Cancel
+                </button>
 
-                <button type="submit" className="bg-red-500 px-4 py-2 text-lg rounded-lg font-bold text-white">Save</button>
+                <button
+                  type="submit"
+                  className="bg-red-500 px-4 py-2 text-lg rounded-lg font-bold text-white"
+                >
+                  Save
+                </button>
               </div>
-
             </form>
-
           </div>
         </div>
-
       )}
-
     </div>
   );
 };

@@ -52,7 +52,6 @@ const Register = () => {
       console.log(response.message);
 
       navigate("/login", { replace: true });
-      
     } catch (error) {
       setError(error.response?.data?.message || "Register Failed");
     } finally {
@@ -76,10 +75,7 @@ const Register = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Username */}
             <div>
-              <label
-                htmlFor="username"
-                className="block mb-2 font-medium"
-              >
+              <label htmlFor="username" className="block mb-2 font-medium">
                 Username
               </label>
 
@@ -97,10 +93,7 @@ const Register = () => {
 
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block mb-2 font-medium"
-              >
+              <label htmlFor="email" className="block mb-2 font-medium">
                 Email
               </label>
 
@@ -119,10 +112,7 @@ const Register = () => {
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 font-medium"
-            >
+            <label htmlFor="password" className="block mb-2 font-medium">
               Password
             </label>
 
@@ -140,10 +130,7 @@ const Register = () => {
 
           {/* Confirm Password */}
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block mb-2 font-medium"
-            >
+            <label htmlFor="confirmPassword" className="block mb-2 font-medium">
               Confirm Password
             </label>
 
@@ -161,10 +148,7 @@ const Register = () => {
 
           {/* Avatar */}
           <div>
-            <label
-              htmlFor="avatar"
-              className="block mb-2 font-medium"
-            >
+            <label htmlFor="avatar" className="block mb-2 font-medium">
               Profile Picture
             </label>
 
@@ -179,11 +163,7 @@ const Register = () => {
             />
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm font-medium">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
 
           {/* Register Button */}
           <button

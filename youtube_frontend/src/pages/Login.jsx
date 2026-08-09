@@ -38,9 +38,7 @@ const Login = () => {
 
       navigate("/", { replace: true });
     } catch (error) {
-      setError(
-        error.response?.data?.message || "Login failed"
-      );
+      setError(error.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -48,30 +46,19 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-
       <div className="w-full max-w-md bg-white border rounded-2xl shadow-lg p-8">
-
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">
-            Welcome Back
-          </h1>
+          <h1 className="text-3xl font-bold">Welcome Back</h1>
 
           <p className="text-gray-500 mt-2">
             Sign in to continue to YouTube Clone
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-5"
-        >
-
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block mb-2 font-medium"
-            >
+            <label htmlFor="email" className="block mb-2 font-medium">
               Email
             </label>
 
@@ -88,10 +75,7 @@ const Login = () => {
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 font-medium"
-            >
+            <label htmlFor="password" className="block mb-2 font-medium">
               Password
             </label>
 
@@ -115,11 +99,7 @@ const Login = () => {
             </Link>
           </div>
 
-          {error && (
-            <p className="text-red-500 text-sm">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
@@ -144,11 +124,8 @@ const Login = () => {
               Register
             </Link>
           </p>
-
         </form>
-
       </div>
-
     </div>
   );
 };

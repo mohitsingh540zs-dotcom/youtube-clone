@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { uploadVideo } from "../api/video";
-import { categories } from "../utils/data"
+import { categories } from "../utils/data";
 
 const UploadVideo = () => {
   const navigate = useNavigate();
@@ -12,13 +12,12 @@ const UploadVideo = () => {
     category: "General",
     thumbnail: null,
     videoUrl: null,
-    duration: 0
+    duration: 0,
   });
 
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -79,48 +78,27 @@ const UploadVideo = () => {
       await uploadVideo(data);
 
       navigate("/profile");
-
     } catch (error) {
-
-      setError(
-        error.response?.data?.message || "Video upload failed."
-      );
-
+      setError(error.response?.data?.message || "Video upload failed.");
     } finally {
-
       setLoading(false);
-
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
-
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold mb-2">Upload Video</h1>
 
-        <h1 className="text-3xl font-bold mb-2">
-          Upload Video
-        </h1>
+        <p className="text-gray-500 mb-8">Share your content with the world.</p>
 
-        <p className="text-gray-500 mb-8">
-          Share your content with the world.
-        </p>
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-6"
-        >
-
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Thumbnail */}
 
           <div>
-
-            <label className="block font-medium mb-2">
-              Thumbnail
-            </label>
+            <label className="block font-medium mb-2">Thumbnail</label>
 
             <div className="w-full h-60 rounded-xl overflow-hidden bg-gray-200">
-
               {preview ? (
                 <img
                   src={preview}
@@ -132,7 +110,6 @@ const UploadVideo = () => {
                   Thumbnail Preview
                 </div>
               )}
-
             </div>
 
             <input
@@ -143,16 +120,12 @@ const UploadVideo = () => {
               className="mt-3 border px-4 py-1 rounded-lg cursor-pointer"
               required
             />
-
           </div>
 
           {/* Video */}
 
           <div>
-
-            <label className="block font-medium mb-2">
-              Video
-            </label>
+            <label className="block font-medium mb-2">Video</label>
 
             <input
               type="file"
@@ -168,16 +141,12 @@ const UploadVideo = () => {
                 {formData.video.name}
               </p>
             )}
-
           </div>
 
           {/* Title */}
 
           <div>
-
-            <label className="block mb-2 font-medium">
-              Title
-            </label>
+            <label className="block mb-2 font-medium">Title</label>
 
             <input
               type="text"
@@ -188,16 +157,12 @@ const UploadVideo = () => {
               className="w-full border rounded-xl p-3 outline-none focus:border-red-500"
               required
             />
-
           </div>
 
           {/* Description */}
 
           <div>
-
-            <label className="block mb-2 font-medium">
-              Description
-            </label>
+            <label className="block mb-2 font-medium">Description</label>
 
             <textarea
               rows={5}
@@ -208,16 +173,12 @@ const UploadVideo = () => {
               className="w-full border rounded-xl p-3 resize-none outline-none focus:border-red-500"
               required
             />
-
           </div>
 
           {/* Category */}
 
           <div>
-
-            <label className="block mb-2 font-medium">
-              Category
-            </label>
+            <label className="block mb-2 font-medium">Category</label>
 
             <select
               name="category"
@@ -226,22 +187,14 @@ const UploadVideo = () => {
               className="w-full border rounded-xl p-3 outline-none focus:border-red-500"
             >
               {categories.map((category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
+                <option key={category} value={category}>
                   {category}
                 </option>
               ))}
             </select>
-
           </div>
 
-          {error && (
-            <p className="text-red-500">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-red-500">{error}</p>}
 
           <button
             type="submit"
@@ -250,11 +203,8 @@ const UploadVideo = () => {
           >
             {loading ? "Uploading..." : "Upload Video"}
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 };
