@@ -103,7 +103,7 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
                     <div
                         to="/profile"
                         onClick={() => setClicked(!clicked)}
-                        className="flex items-center cursor-pointer relative w-10 h-10 rounded-full"
+                        className="flex items-center cursor-pointer relative w-10 h-10 rounded-full border border-gray-400"
                     >
                         {user.avatar ? (
                             <img

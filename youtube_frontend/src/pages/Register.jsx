@@ -52,6 +52,7 @@ const Register = () => {
       console.log(response.message);
 
       navigate("/login", { replace: true });
+      
     } catch (error) {
       setError(error.response?.data?.message || "Register Failed");
     } finally {
@@ -173,6 +174,7 @@ const Register = () => {
               type="file"
               accept="image/*"
               onChange={handleChange}
+              required
               className="w-full border border-gray-300 rounded-xl p-3 cursor-pointer"
             />
           </div>

@@ -140,7 +140,7 @@ const UploadVideo = () => {
               name="thumbnail"
               accept="image/*"
               onChange={handleChange}
-              className="mt-3"
+              className="mt-3 border px-4 py-1 rounded-lg cursor-pointer"
               required
             />
 
@@ -160,7 +160,7 @@ const UploadVideo = () => {
               accept="video/*"
               onChange={handleChange}
               required
-              className="w-full border rounded-xl p-3"
+              className="w-full border rounded-xl p-3 cursor-pointer"
             />
 
             {formData.video && (
@@ -246,7 +246,7 @@ const UploadVideo = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold disabled:opacity-60"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold disabled:opacity-60 cursor-pointer"
           >
             {loading ? "Uploading..." : "Upload Video"}
           </button>

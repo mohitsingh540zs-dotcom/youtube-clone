@@ -25,7 +25,7 @@ const CommentInput = ({ onSubmit }) => {
         <div className="flex gap-3 mt-6">
 
             {/* Avatar */}
-            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-300">
+            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-gray-400">
 
                 {user?.avatar ? (
                     <img

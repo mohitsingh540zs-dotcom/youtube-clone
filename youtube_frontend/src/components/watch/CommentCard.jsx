@@ -55,7 +55,7 @@ const CommentCard = ({ comment, refreshComments }) => {
         <div className="flex gap-3 py-4">
 
             {/* Avatar */}
-            <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden">
+            <div className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden border border-gray-400">
 
                 {comment?.owner?.avatar ? (
                     <img

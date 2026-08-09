@@ -1,6 +1,8 @@
 import { Download, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
+import { createLike, getLikesStatus, unLike } from "../../api/like";
 
 const VideoInfo = ({ video }) => {
     const { user } = useAuth();
@@ -10,6 +12,63 @@ const VideoInfo = ({ video }) => {
     const channelLink = isOwner
         ? "/profile"
         : `/channel/${video?.channel?._id}`;
+
+    const [liked, setLiked] = useState(false);
+    const [likes, setLikes] = useState(video?.likes || 0);
+    const [likeLoading, setLikeLoading] = useState(false);
+
+    useState(() => {
+        if (!video?._id) return;
+
+        setLikes(video.likes || 0);
+
+        const fetchLikes = async () => {
+
+            try {
+                const data = await getLikesStatus(video._id);
+
+                setLiked(data.liked);
+                setLikes(data.likes);
+
+            } catch (error) {
+                if (error.response?.status === 401 ||
+                    error.response?.status === 403) {
+                    setLiked(false);
+                } else {
+                    console.log("Like status error:", error);
+                }
+            }
+        }
+        fetchLikes();
+    }, [video?._id, video?.likes])
+
+    const handleLike = async () => {
+        if (likeLoading) return
+
+        try {
+
+            if (liked) {
+                const data = await unLike(video._id);
+
+                setLiked(false);
+                setLikes(data.likes);
+            }
+            else {
+                const data = await createLike(video._id);
+
+                setLiked(true);
+                setLikes(data.likes);
+            }
+
+        } catch (error) {
+            console.log(
+                error.response?.data?.message ||
+                "Unable to update like"
+            );
+        } finally {
+            setLikeLoading(false);
+        }
+    }
 
     return (
         <div className="flex flex-col gap-3">
@@ -67,15 +126,15 @@ const VideoInfo = ({ video }) => {
 
                     <div className="flex items-center bg-gray-100 rounded-full overflow-hidden">
 
-                        <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 transition">
-                            <ThumbsUp size={20} />
-                            {video?.likes?.length || 0}
+                        <button onClick={handleLike} disabled={likeLoading} className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 transition">
+                            <ThumbsUp size={20} fill={liked ? "currentColor" : "none"} />
+                            {likes} likes
                         </button>
 
                         <div className="w-px h-6 bg-gray-300" />
 
-                        <button className="px-4 py-2 hover:bg-gray-200 transition">
-                            <ThumbsDown size={20} />
+                        <button onClick={handleLike} className="px-4 py-2 hover:bg-gray-200 transition">
+                            <ThumbsDown size={20} fill={liked ? "none" : "currentColor"} />
                         </button>
 
                     </div>
