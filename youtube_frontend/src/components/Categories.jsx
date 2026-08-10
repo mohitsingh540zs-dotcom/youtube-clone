@@ -1,26 +1,31 @@
-const categories = [
-    "Programming",
-    "Entertainment",
-    "Music",
-    "Education",
-    "Gaming",
-    "Sports",
-    "Travel",
-    "Technology",
-    "Lifestyle",
-    "News"
-];
+import { useState } from "react";
+import { categories } from "../utils/data";
 
-const Categories = () => {
-    return (
-        <div className="flex gap-3 items-center overflow-x-auto">
+const Categories = ({ onCategoryChange }) => {
+  const [activeCategory, setActiveCategory] = useState("All");
 
-            {categories.map(item => (
-                <button className="bg-black text-white px-4 py-2 rounded-2xl cursor-pointer hover:bg-gray-700" key={item}>{item}</button>
-            ))}
+  const handleCategory = (category) => {
+    setActiveCategory(category);
+    onCategoryChange(category);
+  };
 
-        </div>
-    )
-}
+  return (
+    <div className="flex gap-3 items-center overflow-x-auto">
+      {categories.map((item) => (
+        <button
+          key={item}
+          onClick={() => handleCategory(item)}
+          className={`px-4 py-2 rounded-2xl cursor-pointer whitespace-nowrap transition ${
+            activeCategory === item
+              ? "bg-black text-white"
+              : "bg-gray-200 text-black hover:bg-gray-300"
+          }`}
+        >
+          {item}
+        </button>
+      ))}
+    </div>
+  );
+};
 
-export default Categories
+export default Categories;
