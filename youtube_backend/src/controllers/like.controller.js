@@ -45,6 +45,7 @@ export const createLike = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Video liked successfully",
+            liked: true,
             likes: video.likes
         });
 
@@ -97,7 +98,9 @@ export const unlike = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Video unliked successfully"
+            message: "Video unliked successfully",
+            liked: false,
+            likes: video.likes
         });
 
     } catch (error) {

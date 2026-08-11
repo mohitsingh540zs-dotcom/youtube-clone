@@ -34,8 +34,6 @@ export const register = async (req, res) => {
                     resource_type: "image",
                 });
 
-                console.log(result);
-
                 avatar = result.secure_url;
 
                 fs.unlinkSync(req.file.path);

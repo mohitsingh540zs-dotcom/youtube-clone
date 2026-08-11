@@ -32,7 +32,7 @@ export const createComment = async (req, res) => {
         }
 
         const newComment = await Comment.create({
-            text,
+            text: text.trim(),
             owner: req.user._id,
             video: videoId
         });
@@ -42,7 +42,7 @@ export const createComment = async (req, res) => {
         return res.status(201).json({
             success: true,
             message: "Comment created successfully",
-            newComment
+            comment: newComment
         });
 
 
@@ -89,6 +89,7 @@ export const getCommentsByVideo = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Comments fetched successfully",
+            length: comments.length,
             comments
         });
 
