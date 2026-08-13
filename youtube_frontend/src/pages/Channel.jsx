@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getVideosByChannel } from "../api/channel";
 import VideoGrid from "../components/VideoGrid";
+import useSubscription from "../hooks/useSubscription";
 
 const Channel = () => {
   const { id } = useParams();
   const [channel, setChannel] = useState(null);
   const [videos, setVideos] = useState([]);
+  const { subscribed, subscribers, toggleSubscription } = useSubscription(id);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +68,7 @@ const Channel = () => {
 
             <span>•</span>
 
-            <span>{channel?.subscribers?.length || 0} subscribers</span>
+            <span>{subscribers || 0} subscribers</span>
           </div>
 
           <p className="mt-4 text-gray-700">
@@ -79,8 +81,15 @@ const Channel = () => {
         </div>
 
         <div className="flex gap-3 flex-wrap">
-          <button className="bg-red-500 text-white hover:bg-red-600 px-6 py-3 rounded-full">
-            Subscribe
+          <button
+            onClick={toggleSubscription}
+            className={`px-6 py-3 rounded-full cursor-pointer font-semibold ${
+              subscribed
+                ? "bg-gray-200 text-black hover:bg-gray-300"
+                : "bg-red-500 text-white hover:bg-red-600"
+            }`}
+          >
+            {subscribed ? "Subscribed" : "Subscribe"}
           </button>
         </div>
       </div>

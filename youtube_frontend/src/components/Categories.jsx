@@ -10,7 +10,7 @@ const Categories = ({ onCategoryChange }) => {
   };
 
   return (
-    <div className="flex gap-3 items-center overflow-x-auto">
+    <div className="flex gap-3 items-center overflow-x-auto ">
       {categories.map((item) => (
         <button
           key={item}

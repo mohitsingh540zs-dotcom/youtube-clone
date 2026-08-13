@@ -1,24 +1,43 @@
 import { Search } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
-    return (
-        <div className="hidden md:flex items-center w-full max-w-xl h-11 border border-gray-300 rounded-full overflow-hidden">
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
-            <input
-                type="text"
-                placeholder="Search videos..."
-                aria-label="Search videos"
-                className="flex-1 h-full px-5 outline-none"
-            />
+  const handleSearch = (e) => {
+    e.preventDefault();
 
-            <button
-                className="w-16 h-full border-l border-gray-300 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition duration-200"
-            >
-                <Search size={20} />
-            </button>
+    const query = search.trim();
 
-        </div>
-    );
+    if (!query) return;
+
+    navigate(`/search?title=${encodeURIComponent(query)}`);
+  };
+
+  return (
+    <form
+      onSubmit={handleSearch}
+      className="w-full h-10 flex border border-gray-300 rounded-full overflow-hidden"
+    >
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search videos..."
+        aria-label="Search videos"
+        className="flex-1 min-w-0 px-5 outline-none"
+      />
+
+      <button
+        type="submit"
+        className="w-16 flex-shrink-0 border-l border-gray-300 flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition duration-200"
+      >
+        <Search size={20} />
+      </button>
+    </form>
+  );
 };
 
 export default SearchBar;

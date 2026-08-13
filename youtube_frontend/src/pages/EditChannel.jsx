@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { editChannel, getMyChannel } from "../api/channel";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const EditChannel = () => {
   const navigate = useNavigate();
@@ -121,6 +121,12 @@ const EditChannel = () => {
         <h1 className="text-2xl font-bold">No channel found</h1>
 
         {error && <p className="text-red-500">{error}</p>}
+        <Link
+          to={"/create-channel"}
+          className="bg-red-500 text-white  font-bold px-4 py-2 rounded-full"
+        >
+          Create-Channel
+        </Link>
       </div>
     );
   }

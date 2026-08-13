@@ -27,9 +27,6 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
         }
     };
 
-
-
-
     return (
         <header className="sticky top-0 z-50 h-16 bg-white border-b px-4 md:px-6 flex items-center justify-between gap-4">
 

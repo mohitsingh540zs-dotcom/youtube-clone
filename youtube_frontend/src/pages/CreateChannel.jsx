@@ -96,13 +96,13 @@ const CreateChannel = () => {
               name="banner"
               accept="image/*"
               onChange={handleChange}
-              className="mt-3"
+              className="mt-3 bg-gray-200 px-4 rounded-lg cursor-pointer border"
             />
           </div>
 
           {/* User Avatar */}
-          <div className="flex items-center gap-6">
-            <div className="w-28 h-28 rounded-full overflow-hidden bg-gray-300 border border-gray-400 ">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="w-28 h-28 rounded-full overflow-hidden border border-gray-300">
               {user?.avatar ? (
                 <img
                   src={user.avatar}
@@ -110,8 +110,8 @@ const CreateChannel = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full">
-                  Avatar
+                <div className="flex items-center justify-center h-full bg-red-400 text-xl font-bold">
+                  {user?.username?.charAt(0)?.toUpperCase()}
                 </div>
               )}
             </div>
