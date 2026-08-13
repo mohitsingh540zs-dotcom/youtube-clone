@@ -65,9 +65,6 @@ export const register = async (req, res) => {
                 fs.unlinkSync(req.file.path);
             } catch { }
         }
-        console.error(error);
-        console.error(error.message);
-        console.error(error.http_code);
 
         return res.status(500).json({
             success: false,
