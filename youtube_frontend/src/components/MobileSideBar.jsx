@@ -41,7 +41,7 @@ const menu = [
     {
         section: "You",
         items: [
-            { title: "My Channel", icon: UserCircle, path: "/channel" }
+            { title: "My Channel", icon: UserCircle, path: "/profile" }
         ]
     }
 ];

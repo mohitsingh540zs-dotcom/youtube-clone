@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { deleteVideo, editVideo, getMyVideos } from "../api/video";
 import { categories } from "../utils/data";
 import { X } from "lucide-react";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -52,6 +53,8 @@ const Profile = () => {
     fetchData();
   }, []);
 
+  
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -82,10 +85,12 @@ const Profile = () => {
     }
   };
 
-  if (loading) {
+   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh]">
-        <h1 className="text-2xl font-semibold">Loading...</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 9 }).map((_, index) => (
+          <SkeletonLoader key={index} />
+        ))}
       </div>
     );
   }

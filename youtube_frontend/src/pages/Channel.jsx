@@ -3,15 +3,18 @@ import { useParams } from "react-router-dom";
 import { getVideosByChannel } from "../api/channel";
 import VideoGrid from "../components/VideoGrid";
 import useSubscription from "../hooks/useSubscription";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const Channel = () => {
   const { id } = useParams();
   const [channel, setChannel] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { subscribed, subscribers, toggleSubscription } = useSubscription(id);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const data = await getVideosByChannel(id);
 
@@ -19,11 +22,23 @@ const Channel = () => {
         setVideos(data.videos);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 9 }).map((_, index) => (
+          <SkeletonLoader key={index} />
+        ))}
+      </div>
+    );
+  }
 
   if (!channel) {
     return <div>Channel not found</div>;
@@ -37,18 +52,20 @@ const Channel = () => {
           src={channel?.banner}
           alt={channel?.owner?.username}
           className="w-full h-full object-cover rounded-xl"
+          loading="lazy"
         />
       </div>
 
       {/* profile */}
       <div className="flex flex-col lg:flex-row lg:items-end gap-6 -mt-16 md:-mt-20 px-4">
         {/* avatar */}
-        <div className="w-36 h-36 md:w-44 md:h-44 rounded-full ">
+        <div className="w-36 h-36 md:w-44 md:h-44 rounded-full border border-gray-400 bg-white ">
           {channel?.owner?.avatar ? (
             <img
               src={channel?.owner?.avatar}
               alt={channel?.owner?.username}
               className="w-full h-full object-cover rounded-full"
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full rounded-full text-5xl flex items-center justify-center bg-red-500 text-white font-bold">

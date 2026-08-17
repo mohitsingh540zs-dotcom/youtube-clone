@@ -62,6 +62,7 @@ const CommentCard = ({ comment, refreshComments }) => {
                         src={comment.owner.avatar}
                         alt={comment.owner.username}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                     />
                 ) : (
                     <div className="w-full h-full rounded-full bg-red-600 text-white flex items-center justify-center font-bold">

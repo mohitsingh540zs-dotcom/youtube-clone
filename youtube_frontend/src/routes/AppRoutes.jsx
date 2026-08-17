@@ -1,18 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
+import { lazy } from "react";
 import AuthLayout from "../layouts/AuthLayout.jsx";
-import Register from "../pages/Register.jsx";
-import Login from "../pages/Login.jsx";
+const Register = lazy(() => import("../pages/Register.jsx"));
+const Login = lazy(() => import("../pages/Login.jsx"));
 import MainLayout from "../layouts/MainLayout.jsx";
-import Home from "../pages/Home.jsx";
-import Watch from "../pages/Watch.jsx";
-import Channel from "../pages/Channel.jsx";
-import UploadVideo from "../pages/UploadVideo.jsx";
-import EditChannel from "../pages/EditChannel.jsx";
-import Profile from "../pages/Profile.jsx";
-import Search from "../pages/Search.jsx";
-import NotFound from "../pages/NotFound.jsx";
+const Home = lazy(() => import("../pages/Home.jsx"));
+const Watch = lazy(() => import("../pages/Watch.jsx"));
+const Channel = lazy(() => import("../pages/Channel.jsx"));
+const UploadVideo = lazy(() => import("../pages/UploadVideo.jsx"));
+const EditChannel = lazy(() => import("../pages/EditChannel.jsx"));
+const Profile = lazy(() => import("../pages/Profile.jsx"));
+const Search = lazy(() => import("../pages/Search.jsx"));
+const NotFound = lazy(() => import("../pages/NotFound.jsx"));
+const CreateChannel = lazy(() => import("../pages/CreateChannel.jsx"));
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import CreateChannel from "../pages/CreateChannel.jsx";
 
 const AppRoutes = createBrowserRouter([
   {

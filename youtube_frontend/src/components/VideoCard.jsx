@@ -13,6 +13,7 @@ const VideoCard = ({ video }) => {
           src={video.thumbnail}
           alt={video.title}
           className="w-full h-full object-fill rounded-xl"
+          loading="lazy"
         />
       </div>
 
@@ -24,6 +25,7 @@ const VideoCard = ({ video }) => {
               src={video.owner.avatar}
               alt={video.owner.username}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full rounded-full text-lg sm:text-xl text-white bg-red-400 flex items-center justify-center font-bold">

@@ -23,6 +23,7 @@ const CommentSection = ({ videoId }) => {
         fetchComments();
     }, [videoId]);
 
+
     const addComment = async (text) => {
         try {
             await createComment(videoId, text);
@@ -33,7 +34,7 @@ const CommentSection = ({ videoId }) => {
     };
 
     return (
-        <div className="h-80 mt-6 flex flex-col gap-6 bg-gray-100 overflow-auto p-3 rounded-2xl">
+        <div className="h-80 md:h-fit mt-6 flex flex-col gap-6 bg-gray-100 overflow-auto p-3 rounded-2xl">
 
             <div className="flex items-center gap-6">
                 <h2 className="font-semibold text-lg">
