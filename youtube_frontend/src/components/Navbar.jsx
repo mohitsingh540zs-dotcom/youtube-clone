@@ -1,6 +1,6 @@
 import { Bell, Menu, Plus, Search, UserCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import SearchBar from "./SearchBar";
+import SearchBar from "./Searchbar.jsx";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { logout } from "../api/auth";
