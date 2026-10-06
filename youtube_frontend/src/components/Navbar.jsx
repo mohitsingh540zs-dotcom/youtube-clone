@@ -1,6 +1,6 @@
 import { Bell, Menu, Plus, Search, UserCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import SearchBar from "./Searchbar.jsx";
+import Searchbar from "./Searchbar.jsx";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { logout } from "../api/auth";
@@ -65,7 +65,7 @@ const Navbar = ({ setIsSidebarOpen, setIsMobileOpen }) => {
 
       {/* Center */}
       <div className="hidden md:flex flex-1 justify-center max-w-2xl">
-        <SearchBar />
+        <Searchbar />
       </div>
 
       {/* Right */}
