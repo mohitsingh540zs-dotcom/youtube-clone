@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://youtube-clone-psi-drab.vercel.app",
     credentials: true,
   }),
 );
@@ -29,7 +29,7 @@ app.use("/comment", commentRoute);
 app.use("/like", likeRoute);
 app.use("/subscription", subcriptionRoute);
 
-app.get("/health", (req, res) => {
+app.get("/health", (_, res) => {
   return res.status(200).json({
     success: true,
     message: "Server is running successfully",
