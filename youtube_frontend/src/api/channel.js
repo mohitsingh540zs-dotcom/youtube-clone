@@ -24,3 +24,8 @@ export const editChannel = async (formData) => {
   const { data } = await api.patch("/channel/update-me", formData);
   return data;
 };
+
+export const deleteChannel = async () => {
+  const { data } = await api.delete("channel/delete-me");
+  return data;
+};

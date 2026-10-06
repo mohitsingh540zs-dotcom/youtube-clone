@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getMyChannel } from "../api/channel";
-import { Link } from "react-router-dom";
+import { deleteChannel, getMyChannel } from "../api/channel";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { deleteVideo, editVideo, getMyVideos } from "../api/video";
 import { categories } from "../utils/data";
@@ -15,6 +15,8 @@ const Profile = () => {
   const [videos, setVideos] = useState([]);
   const [editingVideo, setEditingVideo] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -48,12 +50,23 @@ const Profile = () => {
       setLoading(false);
     }
   };
+  const handleDeleteChannel = async () => {
+    const confirmDelete = window.confirm("Delete your Channel?");
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteChannel();
+      setChannel(null);
+      navigate("/create-channel");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -85,7 +98,7 @@ const Profile = () => {
     }
   };
 
-   if (loading) {
+  if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 9 }).map((_, index) => (
@@ -213,6 +226,13 @@ const Profile = () => {
           >
             Edit Channel
           </Link>
+
+          <button
+            onClick={handleDeleteChannel}
+            className="bg-gray-200 hover:bg-gray-300 px-6 py-3 rounded-full"
+          >
+            Delete Channel
+          </button>
         </div>
       </div>
 
